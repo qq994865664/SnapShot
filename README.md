@@ -6,6 +6,11 @@
 
 如果你喜欢这个项目请点一下右上方的Star按钮哦，如果你希望订阅，请点击Wacth。非常感谢你的支持！
 
+该项目是拷贝别人的github项目，并修改。
+
+增加了复制截图到剪切板，
+增加了写截图到文件
+
 ## 简介
 
 ![image](https://github.com/CCwant/SnapShot/blob/master/Doc/boot1.png)
