@@ -3,6 +3,9 @@
 
 #include "stdafx.h"
 #include "SnapShot.h"
+#include <iostream>
+#include "atlstr.h"
+
 
 #define MAX_LOADSTRING 100
 
@@ -26,7 +29,29 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 	g_save_path = lpCmdLine;
+	
+	if (g_save_path == NULL || g_save_path[0] == 0)
+	{
+		TCHAR szTempFileName[MAX_PATH];
+		TCHAR lpTempPathBuffer[MAX_PATH];
+		TCHAR lpBuffer[MAX_PATH];
 
+		GetTempPath(MAX_PATH, lpTempPathBuffer); // buffer for path 
+
+		std::time_t rawtime;
+		std::tm* timeinfo;
+		char buffer[80];
+
+		std::time(&rawtime);
+		timeinfo = std::localtime(&rawtime);
+
+		std::strftime(buffer, 80, "screenshot_%Y_%m_%d_%H_%M_%S.jpg", timeinfo);
+
+		_tcscpy(lpBuffer, CA2T(buffer));
+		_tcscat(lpTempPathBuffer, lpBuffer);
+		g_save_path = lpTempPathBuffer;
+		OutputDebugString(g_save_path);
+	}
 
 	// TODO: 在此放置代码。
 	MSG msg;
@@ -163,7 +188,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		TRACE("WM_LBUTTONDBLCLK\n");
 		//保存位图到粘贴板中,bSave 为TRUE,
 		HBITMAP hBitmap;
-		hBitmap= m_SnapShotWnd.CopyScreenToBitmap(FALSE);
+		hBitmap = m_SnapShotWnd.CopyScreenToBitmap(FALSE, g_save_path);
 		m_SnapShotWnd.SaveBitmapToFile(g_save_path, hBitmap);
 		point.x = LOWORD(lParam);
 		point.y = HIWORD(lParam);
@@ -191,7 +216,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_KEYDOWN:
 		if (wParam == VK_ESCAPE)
 			PostQuitMessage(0);
-			break;
+		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;

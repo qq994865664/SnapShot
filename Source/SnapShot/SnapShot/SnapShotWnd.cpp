@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "SnapShotWnd.h"
+#include "atlstr.h"
 
 #define BM_MAGIC 0x4D42  /* 'BM' */
 
@@ -418,7 +419,7 @@ void CSnapShotWnd::DrawText(HDC dc, int x, int y, LPCWSTR lpString, int size)
 }
 
 
-HBITMAP CSnapShotWnd::CopyScreenToBitmap(BOOL bSave)
+HBITMAP CSnapShotWnd::CopyScreenToBitmap(BOOL bSave, LPCTSTR clip_path)
 //lpRect 代表选定区域
 {
 	HDC       hScrDC, hMemDC;
@@ -468,20 +469,40 @@ HBITMAP CSnapShotWnd::CopyScreenToBitmap(BOOL bSave)
 	DeleteDC(hScrDC);
 	DeleteDC(hMemDC);
 
-	if (OpenClipboard(NULL))
-	{
-		//清空剪贴板
-		EmptyClipboard();
-		//把屏幕内容粘贴到剪贴板上,
-		//hBitmap 为刚才的屏幕位图句柄
-		SetClipboardData(CF_BITMAP, hBitmap);
-		//关闭剪贴板
-		CloseClipboard();
-	}
+	//if (OpenClipboard(NULL))
+	//{
+	//	//清空剪贴板
+	//	EmptyClipboard();
+	//	//把屏幕内容粘贴到剪贴板上,
+	//	//hBitmap 为刚才的屏幕位图句柄
+	//	SetClipboardData(CF_BITMAP, hBitmap);
+	//	//关闭剪贴板
+	//	CloseClipboard();
+	//}
 
+	SetDataToClip(clip_path);
 	// 返回位图句柄
 	
 	return hBitmap;
+}
+
+void CSnapShotWnd::SetDataToClip(LPCTSTR clip_path)
+{
+	//put your text in source
+	if (OpenClipboard(NULL))
+	{
+		HGLOBAL clipbuffer;
+		char* buffer;
+		EmptyClipboard();
+		clipbuffer = GlobalAlloc(GMEM_DDESHARE, lstrlen(clip_path) + 1);
+		buffer = (char*)GlobalLock(clipbuffer);
+
+		WideCharToMultiByte(CP_ACP, 0, clip_path, -1, buffer, 100, NULL, NULL);
+
+		GlobalUnlock(clipbuffer);
+		SetClipboardData(CF_TEXT, clipbuffer);
+		CloseClipboard();
+	}
 }
 
 BOOL WINAPI CSnapShotWnd::SaveBitmapToFile(LPCTSTR bmp_file, HBITMAP hbm)
