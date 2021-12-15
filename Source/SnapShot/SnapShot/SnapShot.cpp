@@ -188,7 +188,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		TRACE("WM_LBUTTONDBLCLK\n");
 		//保存位图到粘贴板中,bSave 为TRUE,
 		HBITMAP hBitmap;
-		hBitmap = m_SnapShotWnd.CopyScreenToBitmap(FALSE, g_save_path);
+		hBitmap = m_SnapShotWnd.CopyScreenToBitmap(g_save_path);
 		m_SnapShotWnd.SaveBitmapToFile(g_save_path, hBitmap);
 		point.x = LOWORD(lParam);
 		point.y = HIWORD(lParam);

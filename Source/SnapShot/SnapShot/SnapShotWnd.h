@@ -18,9 +18,10 @@ public:
 	void OnLButtonUp(POINT point);
 	BOOL OnSetCursor(HWND pWnd, UINT nHitTest);
 	void OnMouseMove(POINT point);
-	HBITMAP CopyScreenToBitmap( BOOL bSave, LPCTSTR clip_path);
+	HBITMAP CopyScreenToBitmap(LPCTSTR clip_path);
 	BOOL WINAPI SaveBitmapToFile(LPCTSTR bmp_file, HBITMAP hbm);
 	void SetDataToClip(LPCTSTR clip_path);
+	void WriteToFile(LPCTSTR clip_path);
 
 private:
 
